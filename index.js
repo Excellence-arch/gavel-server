@@ -4,6 +4,8 @@ const mongoose = require("mongoose");
 const attorneys = require("./routes/attorney.routes");
 const users = require("./routes/users.routes");
 const bodyPaser = require("body-parser");
+const bcryptjs= require('bcryptjs')
+const jwt = require('jsonwebtoken')
 require("dotenv").config();
 app.use(bodyPaser.urlencoded({extended: true}));
 app.use(bodyPaser.json({limit: "60mb"}));
