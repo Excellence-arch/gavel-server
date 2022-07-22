@@ -4,7 +4,7 @@ const bcryptjs= require('bcryptjs')
 const jwt = require('jsonwebtoken')
 const complaint = (req, res) => {
     const complaint = req.body;
-    const form = new UserModel(complaint);
+    const form = new UserComplaintModel(complaint);
     form.save((err) => {
         if (err) internalServerError(res);
         else {
@@ -12,5 +12,8 @@ const complaint = (req, res) => {
         }
     })
 }
+        const login=(request,response)=>{
+            console.log(request.body)
+        }
 
-module.exports = { complaint }
+module.exports = { complaint,login }
