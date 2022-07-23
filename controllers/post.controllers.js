@@ -22,4 +22,16 @@ const post =(request, response)=>{
             }
         })
     }
-module.exports = { post }
+    const getAll=(request,response)=>{
+        let found= postModel.find((err,result)=>{
+            if (err) {
+                console.log(err.message)
+                response.send(err.message)
+            }
+            else{
+                response.send(result)
+                console.log(result)
+            }
+        })
+    }
+module.exports = { post,getAll }
