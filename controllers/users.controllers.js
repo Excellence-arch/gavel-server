@@ -1,5 +1,4 @@
-const UserModel = require("../models/users.models");
-const { internalServerError } = require("./attorneys.controllers");
+const {UserComplaintModel,UserSignupModel} = require("../models/users.models");
 const bcryptjs= require('bcryptjs')
 const jwt = require('jsonwebtoken')
 const complaint = (req, res) => {
@@ -12,8 +11,65 @@ const complaint = (req, res) => {
         }
     })
 }
-        const login=(request,response)=>{
-            console.log(request.body)
+const register = (req, res) => {
+    const userLog = req.body;
+    UserSignupModel.findOne({email: userLog.email}, (err, resp) => {
+        if(err) {
+            internalServerError(res);
+        } else {
+            if(resp) {
+                res.send({status: false, message: "Email already exist"});
+            } else {
+                const myPlaintextPassword = userLog.password
+                const salt = bcryptjs.genSaltSync(10);
+                const hash = bcryptjs.hashSync(myPlaintextPassword, salt);
+                const newForm={
+                    first_name:userLog.first_name,
+                    last_name:userLog.last_name,
+                    email:userLog.email,                
+                    password:hash,
+                    phoneNumber:userLog.phoneNumber
+                }
+                console.log(newForm)
+                const form = new UserSignupModel(newForm);
+                form.save((err) => {
+                    res.send({status: true, message: "Registration successful"});
+                })
+            }
         }
+    })
+}
+const login = (req, res) => {
+    const userLog = req.body;
+    const emaill=userLog.email
+    console.log(userLog)
+        UserSignupModel.findOne({email: userLog.email}, (err,result) => {
+        console.log(result);
+        if (err) internalServerError(res);
+        if (!result) {
+                console.log("Email does not exist")
+                res.send({status: false, message: `Email does not exist`});
 
-module.exports = { complaint,login }
+        }
+        else {
+            const receivedPassword=result.password;
+            const myPlaintextPassword =userLog.password;
+            bcryptjs.hash(myPlaintextPassword,10).then((hash) => {
+                return bcryptjs.compare(myPlaintextPassword, receivedPassword)
+            }).then((result) => {
+                if(result==true){
+                    jwt.sign({emaill},  process.env.JWT_SECRET, function(err, token) {
+                        console.log(token);
+                        console.log("Successful login")
+                        res.send({message:"Your login is successful!",result,token, user:"user"})
+                    })
+                    }
+                    else {
+                        res.send({status: false, message: `Invalid email or password`});
+                        console.log("Wrong password")
+                    }
+                    });
+        }
+    })
+}
+module.exports = { complaint,register,login }

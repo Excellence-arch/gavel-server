@@ -1,5 +1,5 @@
 const app = require("express")();
-const cors = require("cors");
+const cors = require('cors');
 const mongoose = require("mongoose");
 const attorneys = require("./routes/attorney.routes");
 const users = require("./routes/users.routes");

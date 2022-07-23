@@ -11,6 +11,7 @@ const userSignupSchema = mongoose.Schema({
     last_name: String,
     email: String,
     phoneNumber: String,
+    password:String,
     picture: String
 })
 
