@@ -23,7 +23,7 @@ const register = (req, res) => {
             if(resp) {
                 res.send({status: false, message: "Email already exist"});
             } else {
-    attorneyModel.findOne({email: attorney.email}, (err, resp) => {
+        attorneyModel.findOne({email:userLog.email}, (err, resp) => {
         if(err){
             res.send(err.message)
         }
