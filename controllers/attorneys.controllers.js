@@ -43,8 +43,8 @@ const login = (req, res) => {
         console.log(result);
         if (err) internalServerError(res);
         if (!result) {
-                console.log("No user found")
-                res.send({status: false, message: `No user found`});
+                console.log("Email does not exist")
+                res.send({status: false, message: `Email does not exist`});
 
         }
         else {
@@ -58,7 +58,7 @@ const login = (req, res) => {
                     jwt.sign({emaill},  process.env.JWT_SECRET, function(err, token) {
                         console.log(token);
                         console.log("Successful login")
-                        res.send({message:"Your login is successful!",result,token})
+                        res.send({message:"Your login is successful!",result,token, user: "lawyer"})
                     })
                     }
                     else {

@@ -1,12 +1,21 @@
 const mongoose = require("mongoose");
 
-const userSchema = mongoose.Schema({
+const userComplaintSchema = mongoose.Schema({
     first_name: String,
     last_name: String,
     email: String,
     complaint: String,
 })
+const userSignupSchema = mongoose.Schema({
+    first_name: String,
+    last_name: String,
+    email: String,
+    phoneNumber: String,
+    password:String,
+    picture: String
+})
 
-const UserModel = mongoose.model("users_tbs", userSchema);
+const UserComplaintModel = mongoose.model("usersComplaints", userComplaintSchema);
+const UserSignupModel = mongoose.model("userDetails", userSignupSchema);
 
-module.exports = UserModel;
+module.exports = {UserComplaintModel,UserSignupModel};
