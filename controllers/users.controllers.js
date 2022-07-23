@@ -28,7 +28,7 @@ const register = (req, res) => {
             res.send(err.message)
         }
         else if(resp){
-            res.log("Email exists")
+            res.send("Email exists")
         }
         else{
             const myPlaintextPassword = userLog.password
