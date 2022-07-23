@@ -4,6 +4,8 @@ const mongoose = require("mongoose");
 const attorneys = require("./routes/attorney.routes");
 const users = require("./routes/users.routes");
 const dashboard = require("./routes/dashboard.routes");
+const post = require("./routes/post.routes");
+
 
 const bodyPaser = require("body-parser");
 require("dotenv").config();
@@ -13,6 +15,8 @@ app.use(cors());
 app.use("/users", users);
 app.use("/attorneys", attorneys);
 app.use("/dashboard", dashboard);
+app.use("/post", post);
+
 
 
 const PORT = process.env.PORT || 5000;
