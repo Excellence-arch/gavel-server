@@ -1,4 +1,6 @@
 const attorneyModel = require("../models/attorneys.models");
+const {UserSignupModel} = require("../models/users.models");
+
 const bcryptjs= require('bcryptjs')
 const jwt = require('jsonwebtoken')
 const internalServerError = (res) => {
@@ -15,21 +17,35 @@ const register = (req, res) => {
             if(resp) {
                 res.send({status: false, message: "Email already exist"});
             } else {
-                const myPlaintextPassword = attorney.password
-                const salt = bcryptjs.genSaltSync(10);
-                const hash = bcryptjs.hashSync(myPlaintextPassword, salt);
-                // console.log(hash)
-                const newForm={
-                    first_name:attorney.first_name,
-                    last_name:attorney.last_name,
-                    email:attorney.email,                
-                    password:hash
-                }
-                console.log(newForm)
-                const form = new attorneyModel(newForm);
-                form.save((err) => {
-                    res.send({status: true, message: "Registration successful"});
-                })
+    UserSignupModel.findOne({email: attorney.email}, (err, resp) => {
+
+        if(resp) {
+            res.send({status: false, message: "Email already exist"});
+        } 
+        else if(err){
+            res.send(err.message)
+        }
+        else{
+            const myPlaintextPassword = attorney.password
+            const salt = bcryptjs.genSaltSync(10);
+            const hash = bcryptjs.hashSync(myPlaintextPassword, salt);
+            // console.log(hash)
+            const newForm={
+                first_name:attorney.first_name,
+                last_name:attorney.last_name,
+                email:attorney.email,                
+                password:hash,
+                phoneNumber:attorney.phoneNumber
+            }
+            console.log(newForm)
+            const form = new attorneyModel(newForm);
+            form.save((err) => {
+                res.send({status: true, message: "Registration successful"});
+            })
+
+        }
+    })
+
             }
         }
     })
@@ -58,7 +74,7 @@ const login = (req, res) => {
                     jwt.sign({emaill},  process.env.JWT_SECRET, function(err, token) {
                         console.log(token);
                         console.log("Successful login")
-                        res.send({message:"Your login is successful!",result,token, user: "lawyer"})
+                        res.send({message:"Your login is successful!",token})
                     })
                     }
                     else {
