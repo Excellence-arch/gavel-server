@@ -7,13 +7,13 @@ const authenticate=(request, response)=>{
     const token = auth.split(' ')[1]
     console.log(token)
     jwt.verify(token,process.env.JWT_SECRET,(err,decoded)=>{
-        console.log(decoded)
-        const email = decoded.emaill;
         if(err){
             console.log(`jwt could not be decoded`)
             response.send({message:err.message})
         }  
         else{
+            console.log(decoded)
+            const email =decoded.emaill;
         UserSignupModel.findOne({email:email}, (err,result) => {
             if(result){
                 const userDetails=result;
