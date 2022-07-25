@@ -1,6 +1,9 @@
 const {UserComplaintModel,UserSignupModel} = require("../models/users.models");
+const attorneyModel = require("../models/attorneys.models");
+
 const bcryptjs= require('bcryptjs')
-const jwt = require('jsonwebtoken')
+const jwt = require('jsonwebtoken');
+const { response } = require("express");
 const complaint = (req, res) => {
     const complaint = req.body;
     const form = new UserComplaintModel(complaint);
@@ -20,21 +23,32 @@ const register = (req, res) => {
             if(resp) {
                 res.send({status: false, message: "Email already exist"});
             } else {
-                const myPlaintextPassword = userLog.password
-                const salt = bcryptjs.genSaltSync(10);
-                const hash = bcryptjs.hashSync(myPlaintextPassword, salt);
-                const newForm={
-                    first_name:userLog.first_name,
-                    last_name:userLog.last_name,
-                    email:userLog.email,                
-                    password:hash,
-                    phoneNumber:userLog.phoneNumber
-                }
-                console.log(newForm)
-                const form = new UserSignupModel(newForm);
-                form.save((err) => {
-                    res.send({status: true, message: "Registration successful"});
-                })
+        attorneyModel.findOne({email:userLog.email}, (err, resp) => {
+        if(err){
+            res.send(err.message)
+        }
+        else if(resp){
+            res.send({status: false, message: "Email already exist"});
+        }
+        else{
+            const myPlaintextPassword = userLog.password
+            const salt = bcryptjs.genSaltSync(10);
+            const hash = bcryptjs.hashSync(myPlaintextPassword, salt);
+            const newForm={
+                first_name:userLog.first_name,
+                last_name:userLog.last_name,
+                email:userLog.email,                
+                password:hash,
+                phoneNumber:userLog.phoneNumber
+            }
+            console.log(newForm)
+            const form = new UserSignupModel(newForm);
+            form.save((err) => {
+                res.send({status: true, message: "Registration successful"});
+            })
+        }
+    })
+
             }
         }
     })
@@ -61,7 +75,7 @@ const login = (req, res) => {
                     jwt.sign({emaill},  process.env.JWT_SECRET, function(err, token) {
                         console.log(token);
                         console.log("Successful login")
-                        res.send({message:"Your login is successful!",result,token, user:"user"})
+                        res.send({message:"Your login is successful!",token})
                     })
                     }
                     else {
